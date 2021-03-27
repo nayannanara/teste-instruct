@@ -29,20 +29,3 @@ class GithubApi:
             qtd if qtd > 0 else 0
         else:
             return resposta.status_code
-        #https://api.github.com/orgs/ministrycentered/public_members
-        #https://api.github.com/orgs/ministrycentered/repos
-
-    def get_organization_public_repos(self, login: str) -> int:
-        """Retorna todos os respositorios públicos de uma organização
-
-        :login: login da organização no Github
-        """
-        resposta = requests.get(f'https://api.github.com/orgs/{login}/repos')
-
-        status = resposta.status_code
-        qtd = len(resposta.json())
-
-        if status == 200:
-            qtd if qtd > 0 else 0
-        else:
-            return resposta.status_code

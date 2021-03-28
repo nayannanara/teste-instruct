@@ -1,5 +1,6 @@
 from rest_framework import viewsets, status, mixins
 from rest_framework.views import Response
+from django.http import HttpResponse
 
 from api import models, serializers
 from api.integrations.github import GithubApi as git
@@ -41,12 +42,25 @@ class OrganizationViewSet(
             :login: login da organização no Github
         '''
         org = git.get_organization(login)
-        org_members = git.get_organization_public_members(login)
-        instance, created = Organization.objects.update_or_create(
-            login=org['login'],
-            name=org['name'],
-            score=org['public_repos'] + org_members,
-            defaults={'login': login}
-            )
-        serializer = serializers.OrganizationSerializer(instance)
-        return Response(serializer.data)
+        if org != 404:
+            org_members = git.get_organization_public_members(login)
+            if org_members != 404:
+                qtd_membres= len(org_members)
+            else:
+                qtd_membres = 0
+            dados = {
+                'login': org['login'],
+                'name': org['name'],
+                'public_repos': org['public_repos']
+            }
+            instance, created = Organization.objects.update_or_create(
+                login=dados['login'],
+                name=dados['name'],
+                score=dados['public_repos'] + len(org_members),
+                defaults={'login': login}
+                )
+            serializer = serializers.OrganizationSerializer(instance)
+            return Response(serializer.data)
+        else:
+            return HttpResponse(status=404)
+        

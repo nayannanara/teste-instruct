@@ -48,10 +48,20 @@ class OrganizationViewSet(
                 qtd_membres= len(org_members)
             else:
                 qtd_membres = 0
+
+            # algumas organizações não possui os atributos, por exemplo 'errfree'
+            try:
+                login = org['login']
+                name = org['name']
+                repos = org['public_repos']
+            except:
+                login = ''
+                name = ''
+                repos = 0
             dados = {
-                'login': org['login'],
-                'name': org['name'],
-                'public_repos': org['public_repos']
+                'login': login,
+                'name': name,
+                'public_repos': repos
             }
             instance, created = Organization.objects.update_or_create(
                 login=dados['login'],

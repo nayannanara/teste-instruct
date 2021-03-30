@@ -24,7 +24,7 @@ class OrganizationViewSet(
 
     def list(self, request, *args, **kwargs):
         '''
-            Retorna todos os dados de uma organização através da API do Github
+            Retorna todas as organizações cadastradas
         '''
         queryset = self.filter_queryset(self.get_queryset())
 
